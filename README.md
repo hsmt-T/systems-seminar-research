@@ -1,1 +1,1 @@
-# systems-seminar-research
+# システムゼミ研究リポジトリ
