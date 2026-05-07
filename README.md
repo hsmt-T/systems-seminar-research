@@ -9,3 +9,10 @@
 cd rust
 docker compose up --build
 ```
+
+## Go
+
+```sh
+cd Go
+docker compose up --build
+```

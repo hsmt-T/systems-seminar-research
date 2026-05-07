@@ -1,0 +1,23 @@
+FROM golang:1.23-bookworm AS builder
+
+WORKDIR /app
+
+COPY go.mod go.sum* ./
+RUN go mod download
+
+COPY . .
+RUN CGO_ENABLED=0 GOOS=linux go build -o /app/bin/app ./cmd/server
+
+FROM debian:bookworm-slim
+
+WORKDIR /app
+
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends ca-certificates \
+    && rm -rf /var/lib/apt/lists/*
+
+COPY --from=builder /app/bin/app /usr/local/bin/app
+
+EXPOSE 3000
+
+CMD ["app"]
