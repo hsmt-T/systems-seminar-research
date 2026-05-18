@@ -2,8 +2,9 @@ package service
 
 import (
 	"errors"
-	"systems-seminar-research-go/internal/domain"
 	"time"
+
+	"systems-seminar-research-go/internal/domain"
 )
 
 type CreateTodoInput struct {
@@ -22,23 +23,22 @@ type CreateTodoUseCase interface {
 	Execute(input CreateTodoInput) (CreateTodoOutput, error)
 }
 
-type CreateTodoPresenter interface {
-	Output(domain.Todo) CreateTodoOutput
-}
-
 type createTodoInteractor struct {
-	TodoRepo      domain.TodoRepository
-	TodoPresenter CreateTodoPresenter
+	TodoRepo domain.TodoRepository
 }
 
-func NewCreateTodoInteractor(todoRepo domain.TodoRepository, todoPresenter CreateTodoPresenter) CreateTodoUseCase {
+func NewCreateTodoInteractor(
+	todoRepo domain.TodoRepository,
+) CreateTodoUseCase {
 	return &createTodoInteractor{
-		TodoRepo:      todoRepo,
-		TodoPresenter: todoPresenter,
+		TodoRepo: todoRepo,
 	}
 }
 
-func (i *createTodoInteractor) Execute(input CreateTodoInput) (CreateTodoOutput, error) {
+func (i *createTodoInteractor) Execute(
+	input CreateTodoInput,
+) (CreateTodoOutput, error) {
+
 	if input.Title == "" {
 		return CreateTodoOutput{}, errors.New("title is required")
 	}
@@ -56,5 +56,10 @@ func (i *createTodoInteractor) Execute(input CreateTodoInput) (CreateTodoOutput,
 		return CreateTodoOutput{}, err
 	}
 
-	return i.TodoPresenter.Output(todo), nil
+	return CreateTodoOutput{
+		ID:          string(todo.ID),
+		Title:       todo.Title,
+		Description: todo.Description,
+		CreatedAt:   todo.CreatedAt,
+	}, nil
 }

@@ -3,7 +3,6 @@ package controller
 import (
 	"net/http"
 
-	"systems-seminar-research-go/internal/domain"
 	"systems-seminar-research-go/internal/service"
 
 	"github.com/labstack/echo/v4"
@@ -11,17 +10,6 @@ import (
 
 type TodoController struct {
 	createTodoUseCase service.CreateTodoUseCase
-}
-
-type createTodoPresenter struct{}
-
-func (p *createTodoPresenter) Output(todo domain.Todo) service.CreateTodoOutput {
-	return service.CreateTodoOutput{
-		ID:          string(todo.ID),
-		Title:       todo.Title,
-		Description: todo.Description,
-		CreatedAt:   todo.CreatedAt,
-	}
 }
 
 func NewTodoController(createTodoUseCase service.CreateTodoUseCase) *TodoController {

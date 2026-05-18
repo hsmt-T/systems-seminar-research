@@ -31,8 +31,3 @@ func (r *todoRepository) Create(todo *domain.Todo) error {
 
 	return err
 }
-
-func (r *todoRepository) FindAll() ([]domain.Todo, error) {
-
-	return []domain.Todo{}, nil
-}
