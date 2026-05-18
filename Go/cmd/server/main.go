@@ -12,9 +12,9 @@ import (
 	"github.com/labstack/echo/v4/middleware"
 
 	"systems-seminar-research-go/internal/controller"
-	"systems-seminar-research-go/internal/domain"
 	"systems-seminar-research-go/internal/infrastructure/database"
 	"systems-seminar-research-go/internal/infrastructure/persistence"
+	"systems-seminar-research-go/internal/presenter"
 	"systems-seminar-research-go/internal/service"
 )
 
@@ -36,7 +36,7 @@ func main() {
 
 	// Initialize dependencies
 	todoRepo := persistence.NewTodoRepository(db)
-	presenter := &createTodoPresenter{}
+	presenter := presenter.NewCreateTodoPresenter()
 	createTodoUseCase := service.NewCreateTodoInteractor(todoRepo, presenter)
 	todoController := controller.NewTodoController(createTodoUseCase)
 
@@ -51,16 +51,6 @@ func main() {
 	e.Logger.Fatal(e.Start(":3000"))
 }
 
-type createTodoPresenter struct{}
-
-func (p *createTodoPresenter) Output(todo domain.Todo) service.CreateTodoOutput {
-	return service.CreateTodoOutput{
-		ID:          string(todo.ID),
-		Title:       todo.Title,
-		Description: todo.Description,
-		CreatedAt:   todo.CreatedAt,
-	}
-}
 
 func getenv(key, fallback string) string {
 	value := os.Getenv(key)
