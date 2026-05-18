@@ -31,3 +31,19 @@ func (r *todoRepository) Create(todo *domain.Todo) error {
 
 	return err
 }
+
+func (r *todoRepository) FindAll() ([]domain.Todo, error) {
+	todos := []domain.Todo{}
+
+	query := `
+		SELECT id, title, description, created_at
+		FROM todos
+		ORDER BY created_at DESC
+	`
+
+	if err := r.db.Select(&todos, query); err != nil {
+		return nil, err
+	}
+
+	return todos, nil
+}

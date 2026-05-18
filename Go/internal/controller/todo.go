@@ -9,12 +9,17 @@ import (
 )
 
 type TodoController struct {
-	createTodoUseCase service.CreateTodoUseCase
+	createTodoUseCase  service.CreateTodoUseCase
+	findAllTodoUseCase service.FindAllTodoUseCase
 }
 
-func NewTodoController(createTodoUseCase service.CreateTodoUseCase) *TodoController {
+func NewTodoController(
+	createTodoUseCase service.CreateTodoUseCase,
+	findAllTodoUseCase service.FindAllTodoUseCase,
+) *TodoController {
 	return &TodoController{
-		createTodoUseCase: createTodoUseCase,
+		createTodoUseCase:  createTodoUseCase,
+		findAllTodoUseCase: findAllTodoUseCase,
 	}
 }
 
@@ -30,4 +35,13 @@ func (c *TodoController) CreateTodoHandler(ctx echo.Context) error {
 	}
 
 	return ctx.JSON(http.StatusCreated, output)
+}
+
+func (c *TodoController) FindAllTodoHandler(ctx echo.Context) error {
+	output, err := c.findAllTodoUseCase.Execute()
+	if err != nil {
+		return ctx.JSON(http.StatusInternalServerError, map[string]string{"error": err.Error()})
+	}
+
+	return ctx.JSON(http.StatusOK, output)
 }

@@ -36,18 +36,21 @@ func main() {
 	// Initialize dependencies
 	todoRepo := persistence.NewTodoRepository(db)
 	createTodoUseCase := service.NewCreateTodoInteractor(todoRepo)
-	todoController := controller.NewTodoController(createTodoUseCase)
+	findAllTodoUseCase := service.NewFindAllTodoInteractor(todoRepo)
+	todoController := controller.NewTodoController(createTodoUseCase, findAllTodoUseCase)
 
 	e := echo.New()
+
+	e.Pre(middleware.RemoveTrailingSlash())
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
 
 	e.GET("/", rootHandler)
+	e.GET("/todos", todoController.FindAllTodoHandler)
 	e.POST("/todos", todoController.CreateTodoHandler)
 
 	e.Logger.Fatal(e.Start(":3000"))
 }
-
 
 func getenv(key, fallback string) string {
 	value := os.Getenv(key)
