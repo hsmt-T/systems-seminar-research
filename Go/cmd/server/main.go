@@ -45,7 +45,6 @@ func main() {
 	e.Use(middleware.Recover())
 
 	e.GET("/", rootHandler)
-	e.POST("/todos", todoController.CreateTodoHandler)
 	e.POST("/todos/", todoController.CreateTodoHandler)
 
 	e.Logger.Fatal(e.Start(":3000"))
