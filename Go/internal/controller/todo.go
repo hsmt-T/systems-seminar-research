@@ -2,7 +2,7 @@ package controller
 
 import (
 	"net/http"
-	
+
 	"systems-seminar-research-go/internal/service"
 
 	"github.com/labstack/echo/v4"

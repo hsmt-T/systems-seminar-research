@@ -14,7 +14,6 @@ import (
 	"systems-seminar-research-go/internal/controller"
 	"systems-seminar-research-go/internal/infrastructure/database"
 	"systems-seminar-research-go/internal/infrastructure/persistence"
-	"systems-seminar-research-go/internal/presenter"
 	"systems-seminar-research-go/internal/service"
 )
 
@@ -36,8 +35,7 @@ func main() {
 
 	// Initialize dependencies
 	todoRepo := persistence.NewTodoRepository(db)
-	presenter := presenter.NewCreateTodoPresenter()
-	createTodoUseCase := service.NewCreateTodoInteractor(todoRepo, presenter)
+	createTodoUseCase := service.NewCreateTodoInteractor(todoRepo)
 	todoController := controller.NewTodoController(createTodoUseCase)
 
 	e := echo.New()
@@ -45,7 +43,7 @@ func main() {
 	e.Use(middleware.Recover())
 
 	e.GET("/", rootHandler)
-	e.POST("/todos/", todoController.CreateTodoHandler)
+	e.POST("/todos", todoController.CreateTodoHandler)
 
 	e.Logger.Fatal(e.Start(":3000"))
 }
