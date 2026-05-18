@@ -47,3 +47,22 @@ func (r *todoRepository) FindAll() ([]domain.Todo, error) {
 
 	return todos, nil
 }
+
+func (r *todoRepository) DeleteByID(id domain.TodoID) (bool, error) {
+	query := `
+		DELETE FROM todos
+		WHERE id = $1
+	`
+
+	result, err := r.db.Exec(query, id)
+	if err != nil {
+		return false, err
+	}
+
+	rowsAffected, err := result.RowsAffected()
+	if err != nil {
+		return false, err
+	}
+
+	return rowsAffected > 0, nil
+}
