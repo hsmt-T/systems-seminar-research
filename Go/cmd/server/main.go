@@ -38,7 +38,8 @@ func main() {
 	createTodoUseCase := service.NewCreateTodoInteractor(todoRepo)
 	findAllTodoUseCase := service.NewFindAllTodoInteractor(todoRepo)
 	deleteTodoUseCase := service.NewDeleteTodoInteractor(todoRepo)
-	todoController := controller.NewTodoController(createTodoUseCase, findAllTodoUseCase, deleteTodoUseCase)
+	updateTodoUseCase := service.NewUpdateTodoInteractor(todoRepo)
+	todoController := controller.NewTodoController(createTodoUseCase, findAllTodoUseCase, deleteTodoUseCase, updateTodoUseCase)
 
 	e := echo.New()
 
@@ -49,6 +50,7 @@ func main() {
 	e.GET("/", rootHandler)
 	e.GET("/todos", todoController.FindAllTodoHandler)
 	e.POST("/todos", todoController.CreateTodoHandler)
+	e.PUT("/todos/:id", todoController.UpdateTodoHandler)
 	e.DELETE("/todos/:id", todoController.DeleteTodoHandler)
 
 	e.Logger.Fatal(e.Start(":3000"))

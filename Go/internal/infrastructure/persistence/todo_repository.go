@@ -1,6 +1,8 @@
 package persistence
 
 import (
+	"database/sql"
+
 	"systems-seminar-research-go/internal/domain"
 
 	"github.com/jmoiron/sqlx"
@@ -65,4 +67,28 @@ func (r *todoRepository) DeleteByID(id domain.TodoID) (bool, error) {
 	}
 
 	return rowsAffected > 0, nil
+}
+
+func (r *todoRepository) UpdateByID(todo *domain.Todo) (bool, error) {
+	query := `
+		UPDATE todos
+		SET title = $2, description = $3
+		WHERE id = $1
+		RETURNING created_at
+	`
+
+	err := r.db.QueryRow(
+		query,
+		todo.ID,
+		todo.Title,
+		todo.Description,
+	).Scan(&todo.CreatedAt)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return false, nil
+		}
+		return false, err
+	}
+
+	return true, nil
 }
